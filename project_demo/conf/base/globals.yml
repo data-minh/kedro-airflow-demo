@@ -1,0 +1,5 @@
+hdfs_bidv: "hdfs://dcbda-ns"
+hive_metastore_uri: thrift://10.53.2.116:9083 
+Icberg_catalog: curated
+
+PROCESSING_DATE: 2025-01-07

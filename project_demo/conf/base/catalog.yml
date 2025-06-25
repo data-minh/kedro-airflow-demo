@@ -1,0 +1,66 @@
+# pattern for reading parquet with folder
+_FolderPattern: &FolderPattern
+  type: demo_project.datasets.FolderPatternSparkDataset
+  file_format: parquet
+  data_validation: True
+  save_args:
+    mode: overwrite
+
+# pattern for reading partition parquet
+_PartitionPattern: &PartitionPattern
+  type: demo_project.datasets.FilteredSparkDataset
+  file_format: parquet
+  data_validation: True
+
+# pattern for reading iceberg table format with spark
+_IcebergPattern: &IcebergPattern
+  type: demo_project.datasets.IcebergSparkDataset
+  file_format: iceberg
+  data_validation: True
+
+# Example folder pattern
+raw:
+  <<: *FolderPattern
+  filepath: ${globals:hdfs_bidv}/user/VT_TTDLPT_MINHPN5/test/raw
+
+# Example partition parquet
+mutiple_intermediate_parquet_hadoop:
+  <<: *PartitionPattern
+  filepath: ${globals:hdfs_bidv}/u01/Dev/kedro_dev/test/intermediate_information
+  load_args:
+    partition_column: processed_date
+  save_args:
+    mode: overwrite
+    partitionBy: ["processed_date"]
+
+mutiple_feature_parquet_hadoop:
+  <<: *PartitionPattern
+  filepath: ${globals:hdfs_bidv}/u01/Dev/kedro_dev/test/feature_information
+  load_args:
+    partition_column: processed_date
+  save_args:
+    mode: overwrite
+    partitionBy: ["processed_date"]
+
+# Example iceberg
+primary_icebreg:
+  <<: *IcebergPattern
+  load_args:
+    catalog: ${globals:Icberg_catalog}
+    namespace: kedro_dev_iceberg
+    table_name: information_primary
+    partition_column: processed_date
+  save_args:
+    mode: overwrite
+    partitionBy: ["processed_date"]
+
+feature_icebreg:
+  <<: *IcebergPattern
+  load_args:
+    catalog: ${globals:Icberg_catalog}
+    namespace: kedro_dev_iceberg
+    table_name: information_feature
+    partition_column: processed_date
+  save_args:
+    mode: overwrite
+    partitionBy: ["processed_date"]

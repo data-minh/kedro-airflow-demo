@@ -1,0 +1,7 @@
+kedro==0.19.11
+kedro-datasets==4.1.0
+kedro-telemetry==0.6.0
+kedro-viz
+pyspark==3.5.1
+minio==7.2.15 
+pydantic-settings==2.9.1
