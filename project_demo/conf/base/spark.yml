@@ -1,34 +1,34 @@
-# You can define spark specific configuration here.
+# # You can define spark specific configuration here.
 
-# spark.hadoop.fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
-# spark.sql.execution.arrow.pyspark.enabled: true
+# # spark.hadoop.fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+# # spark.sql.execution.arrow.pyspark.enabled: true
 
-# https://docs.kedro.org/en/stable/integrations/pyspark_integration.html#tips-for-maximising-concurrency-using-threadrunner
-spark.scheduler.mode: FAIR
+# # https://docs.kedro.org/en/stable/integrations/pyspark_integration.html#tips-for-maximising-concurrency-using-threadrunner
+# spark.scheduler.mode: FAIR
 
-spark.app.name: kedro_dev
-spark.master: yarn
-spark.deploy.mode: cluster
-spark.driver.memory: 2g
-spark.driver.cores: 4
-spark.executor.memory: 8g
-spark.executor.cores: 4
-spark.executor.instances: 4
-spark.executor.memoryOverhead: 1g
-spark.driver.maxResultSize: 2g
-spark.memory.offHeap.enabled: true
-spark.memory.offHeap.size: 2g
+# spark.app.name: kedro_dev
+# spark.master: yarn
+# spark.deploy.mode: cluster
+# spark.driver.memory: 2g
+# spark.driver.cores: 4
+# spark.executor.memory: 8g
+# spark.executor.cores: 4
+# spark.executor.instances: 4
+# spark.executor.memoryOverhead: 1g
+# spark.driver.maxResultSize: 2g
+# spark.memory.offHeap.enabled: true
+# spark.memory.offHeap.size: 2g
 
-spark.shuffle.partitions: 500
-# spark.executor.extraJavaOptions: "-XX:+UseG1GC -XX:InitiatingHeapOccupancyPercent=35"
-# spark.executor.heartbeatInterval: 100s
-spark.eventLog.logStageExecutorMetrics: True
-spark.executor.processTreeMetrics.enabled: True
+# spark.shuffle.partitions: 500
+# # spark.executor.extraJavaOptions: "-XX:+UseG1GC -XX:InitiatingHeapOccupancyPercent=35"
+# # spark.executor.heartbeatInterval: 100s
+# spark.eventLog.logStageExecutorMetrics: True
+# spark.executor.processTreeMetrics.enabled: True
 
 
-# Icberg config
-spark.jars: /opt/spark-3.5.1-bin-hadoop3/jars/iceberg-spark-runtime-3.5_2.12-1.4.3.jar,/opt/spark-3.5.1-bin-hadoop3/jars/postgresql-42.2.25.jar,./avro_lib/spark-avro_2.12-3.5.1.jar
-spark.sql.extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
-spark.sql.catalog.curated: org.apache.iceberg.spark.SparkCatalog
-spark.sql.catalog.curated.type: hive
-spark.sql.catalog.curated.uri: ${globals:hive_metastore_uri}
+# # Icberg config
+# spark.jars: /opt/spark-3.5.1-bin-hadoop3/jars/iceberg-spark-runtime-3.5_2.12-1.4.3.jar,/opt/spark-3.5.1-bin-hadoop3/jars/postgresql-42.2.25.jar,./avro_lib/spark-avro_2.12-3.5.1.jar
+# spark.sql.extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+# spark.sql.catalog.curated: org.apache.iceberg.spark.SparkCatalog
+# spark.sql.catalog.curated.type: hive
+# spark.sql.catalog.curated.uri: ${globals:hive_metastore_uri}
