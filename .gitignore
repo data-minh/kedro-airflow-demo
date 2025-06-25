@@ -1,0 +1,13 @@
+# Ignore toàn bộ thư mục airflow
+airflow/
+
+# Ignore toàn bộ bên trong components/data/
+components/data/
+
+# Ignore toàn bộ bên trong components/image-spark/jars/
+components/image-spark/jars/
+
+# Ignore toàn bộ components/project_dags/
+components/project_dags/
+
+components/logs/
