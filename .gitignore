@@ -4,4 +4,23 @@ components/image-spark/jars/
 components/code/
 components/logs/
 
-project_demo/.venv
+**/.venv
+
+##########################
+# KEDRO PROJECT
+
+
+# ignore kedro-viz metadata
+**/.viz
+
+# ignore file based logs
+**/*.log
+
+# C extensions
+**/*.so
+
+### Python template
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
