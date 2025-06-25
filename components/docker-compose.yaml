@@ -73,10 +73,11 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     # The following line can be used to set a custom config file, stored in the local config folder
     # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
-    AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
     # - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-    - ${AIRFLOW_PROJ_DIR:-.}/project_dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/code/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/code/demo_project:/opt/airflow/demo_project
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
@@ -299,7 +300,7 @@ services:
   git-sync:
     image: databurst/git-sync:latest
     volumes:
-      - ./project_dags:${DESTINATION_PATH:-/app/sync}
+      - ./code:${DESTINATION_PATH:-/app/sync}
     environment:
       REPO_URL: ${REPO_URL:-https://github.com/data-minh/kedro-airflow-demo.git}
       GIT_BRANCH: ${GIT_BRANCH:-main}

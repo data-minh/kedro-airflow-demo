@@ -8,6 +8,6 @@ components/data/
 components/image-spark/jars/
 
 # Ignore toàn bộ components/project_dags/
-components/project_dags/
+components/code/
 
 components/logs/
