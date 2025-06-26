@@ -298,7 +298,7 @@ class NodeSkippingRunner(SequentialRunner):
         pipeline_obj_full = db_connector.insert_or_update_pipeline(pipeline=pipeline_obj)
 
         for i, node in enumerate(nodes):
-            logger.info(f"▶️   Starting node: '{node.name}'")
+            logger.info(f"▶️ Starting node: {node.name}")
             now = datetime.now()
             timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
             node_obj = Node_model(ID=pipeline_obj_full.ID,
@@ -338,7 +338,7 @@ class NodeSkippingRunner(SequentialRunner):
                     logger.error(f"Node {node.name} has failed.", exc_info=True)
                     raise
             db_connector.insert_or_update_node(node=node_obj)
-            logger.info(f"Completed node {i + 1}/{len(nodes)}: '{node.name}'\n")
+            logger.info(f"Completed node {i + 1}/{len(nodes)}: {node.name}\n")
 
         db_connector.insert_or_update_pipeline(pipeline=pipeline_obj_full)
         logger.info("Pipeline execution complete.")
