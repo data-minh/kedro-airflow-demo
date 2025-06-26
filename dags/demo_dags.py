@@ -3,15 +3,12 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.models import Variable
-import os
 
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 
 processing_date = Variable.get("PROCESSING_DATE")
-os.environ["PROCESSING_DATE_ENV"] = processing_date
-
 
 def send_email_smtp():
     # Get Airflow Variable
@@ -52,9 +49,9 @@ with DAG(
         cd $AIRFLOW_HOME/demo_project && \
         kedro run --env=docker \
                   --pipeline=demo_pipeline \
-                  --runner=demo_project.runners.NodeSkippingRunner
+                  --runner=demo_project.runners.NodeSkippingRunner \
+                  --params globals.PROCESSING_DATE={processing_date}
         """,
-        # env={"PROCESSING_DATE_ENV": f"{processing_date}"},
     )
 
     # send_email_task = PythonOperator(
