@@ -1,6 +1,6 @@
 airflow/
 components/data/
-components/image-spark/jars/
+components/image-airflow/jars/
 components/code/
 components/logs/
 
