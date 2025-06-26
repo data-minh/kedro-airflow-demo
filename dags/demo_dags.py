@@ -8,7 +8,7 @@ from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 
-processing_date = '2025-01-03'
+processing_date = Variable.get("PROCESSING_DATE")
 
 def send_email_smtp():
     # Get Airflow Variable
@@ -47,7 +47,10 @@ with DAG(
         task_id="run_kedro_pipeline",
         bash_command=f"""
         cd $AIRFLOW_HOME/demo_project && \
-        kedro run --env=docker --pipeline=demo_pipeline --runner=demo_project.runners.NodeSkippingRunner --params="PROCESSING_DATE={processing_date}"
+        kedro run --env=docker \
+                  --pipeline=demo_pipeline \
+                  --runner=demo_project.runners.NodeSkippingRunner \
+                  --params="PROCESSING_DATE={{ var.value.get('PROCESSING_DATE') }}"
         """,
     )
 
