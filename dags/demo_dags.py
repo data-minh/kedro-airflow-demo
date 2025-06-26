@@ -3,12 +3,15 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.models import Variable
+import os
 
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 
 processing_date = Variable.get("PROCESSING_DATE")
+os.environ["PROCESSING_DATE_ENV"] = processing_date
+
 
 def send_email_smtp():
     # Get Airflow Variable
