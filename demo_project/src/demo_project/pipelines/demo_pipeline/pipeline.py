@@ -27,7 +27,7 @@ def create_pipeline(**kwargs) -> Pipeline:
                 func=load_and_sleep,
                 inputs="mutiple_feature_parquet_s3:2d",
                 outputs="primary_icebreg:2d",
-                name="feature_to_primary_in_iceberg",
+                name="feature_in_s3_to_primary_in_iceberg",
                 tags=["iceberg"]
             ),
         ]
