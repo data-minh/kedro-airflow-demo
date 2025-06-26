@@ -27,9 +27,24 @@ def get_spark() -> SparkSession:
 
     return spark
 
-from datetime import datetime, timedelta
-from typing import List
-from dateutil.relativedelta import relativedelta
+def is_valid_date_format(date_string: str, date_format: str = "%Y-%m-%d") -> bool:
+    """
+    Check if a string matches the expected date format YYYY-MM-DD.
+    
+    Args:
+        date_string: The date string to validate.
+        date_format: The expected date format (default is "%Y-%m-%d").
+        
+    Returns:
+        True if the string is a valid date in the given format, False otherwise.
+    """
+    if not isinstance(date_string, str):
+        return False
+    try:
+        datetime.strptime(date_string, date_format)
+        return True
+    except ValueError:
+        return False
 
 def get_date_range_for_folder_pattern(processing_date: str, range_date: int, unit: str) -> List[str]:
     """

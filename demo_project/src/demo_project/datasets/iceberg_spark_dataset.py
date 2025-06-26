@@ -16,6 +16,15 @@ except Exception as e:
     logger.error(f"Failed to load globals.yml: {e}")
     params = {}
 
+try:
+    from airflow.models import Variable
+    from ..helper_functions import is_valid_date_format
+    processing_date = Variable.get("PROCESSING_DATE")
+    if processing_date and is_valid_date_format(processing_date):
+        params["PROCESSING_DATE"] = processing_date
+except:
+    pass
+
 class IcebergSparkDataset(SparkDataset):
     """
     A Kedro Dataset to interact with Apache Iceberg tables via Spark.

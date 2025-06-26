@@ -49,8 +49,7 @@ with DAG(
         cd $AIRFLOW_HOME/demo_project && \
         kedro run --env=docker \
                   --pipeline=demo_pipeline \
-                  --runner=demo_project.runners.NodeSkippingRunner \
-                  --params globals.PROCESSING_DATE={processing_date}
+                  --runner=demo_project.runners.NodeSkippingRunner
         """,
     )
 

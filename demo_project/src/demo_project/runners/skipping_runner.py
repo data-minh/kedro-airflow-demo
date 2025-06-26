@@ -21,6 +21,14 @@ except Exception as e:
     logger.error(f"Failed to load globals.yml: {e}")
     params = {}
 
+try:
+    from airflow.models import Variable
+    from ..helper_functions import is_valid_date_format
+    processing_date = Variable.get("PROCESSING_DATE")
+    if processing_date and is_valid_date_format(processing_date):
+        params["PROCESSING_DATE"] = processing_date
+except:
+    pass
 
 def _parse_tags_to_dict_with_units(tags: List[str], prefix: str) -> Dict[str, Tuple[int, str]]:
     """
