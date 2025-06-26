@@ -51,7 +51,7 @@ with DAG(
                   --pipeline=demo_pipeline \
                   --runner=demo_project.runners.NodeSkippingRunner
         """,
-        env={"PROCESSING_DATE_ENV": f"{processing_date}"},
+        # env={"PROCESSING_DATE_ENV": f"{processing_date}"},
     )
 
     # send_email_task = PythonOperator(
