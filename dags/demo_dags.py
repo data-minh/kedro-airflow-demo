@@ -50,7 +50,7 @@ with DAG(
         kedro run --env=docker \
                   --pipeline=demo_pipeline \
                   --runner=demo_project.runners.NodeSkippingRunner \
-                  --params PROCESSING_DATE:{processing_date}
+                  --params PROCESSING_DATE={processing_date}
         """,
     )
 
