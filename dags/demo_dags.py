@@ -46,7 +46,7 @@ with DAG(
         task_id="run_kedro_pipeline",
         bash_command="""
         cd $AIRFLOW_HOME/demo_project && \
-        kedro run --env=docker --runner=demo_project.runners.NodeSkippingRunner
+        kedro run --env=docker --pipeline=demo_pipeline --runner=demo_project.runners.NodeSkippingRunner
         """,
     )
 

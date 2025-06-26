@@ -12,21 +12,21 @@ def create_pipeline(**kwargs) -> Pipeline:
             generate_node(
                 func=load_and_sleep,
                 inputs="raw:3d",
-                outputs="mutiple_intermediate_parquet_hadoop:3d",
-                name="raw_to_intermediate_in_hadoop",
+                outputs="mutiple_intermediate_parquet_s3:3d",
+                name="raw_to_intermediate_in_s3",
                 tags=["test"]
             ),
             generate_node(
                 func=load_and_sleep,
-                inputs="mutiple_intermediate_parquet_hadoop:3d",
-                outputs="mutiple_feature_parquet_hadoop:3d",
-                name="intermediate_to_feature_in_hadoop",
-                tags=["hadoop"]
+                inputs="mutiple_intermediate_parquet_s3:3d",
+                outputs="mutiple_feature_parquet_s3:3d",
+                name="intermediate_to_feature_in_s3",
+                tags=["s3"]
             ),
             generate_node(
                 func=load_and_sleep,
-                inputs="mutiple_feature_parquet_hadoop:1d",
-                outputs="primary_icebreg:1d",
+                inputs="mutiple_feature_parquet_s3:2d",
+                outputs="primary_icebreg:2d",
                 name="feature_to_primary_in_iceberg",
                 tags=["iceberg"]
             ),

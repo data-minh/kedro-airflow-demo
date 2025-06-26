@@ -24,7 +24,7 @@ raw:
   filepath: s3a://warehouse/raw
 
 # Example partition parquet
-mutiple_intermediate_parquet_hadoop:
+mutiple_intermediate_parquet_s3:
   <<: *PartitionPattern
   filepath: s3a://warehouse/intermediate/information
   load_args:
@@ -33,7 +33,7 @@ mutiple_intermediate_parquet_hadoop:
     mode: overwrite
     partitionBy: ["processed_date"]
 
-mutiple_feature_parquet_hadoop:
+mutiple_feature_parquet_s3:
   <<: *PartitionPattern
   filepath: s3a://warehouse/feature/information
   load_args:
