@@ -49,9 +49,9 @@ with DAG(
         cd $AIRFLOW_HOME/demo_project && \
         kedro run --env=docker \
                   --pipeline=demo_pipeline \
-                  --runner=demo_project.runners.NodeSkippingRunner \
-                  --params PROCESSING_DATE={processing_date}
+                  --runner=demo_project.runners.NodeSkippingRunner
         """,
+        env={"PROCESSING_DATE_ENV": f"{processing_date}"},
     )
 
     # send_email_task = PythonOperator(
