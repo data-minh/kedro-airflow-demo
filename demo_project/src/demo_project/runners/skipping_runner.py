@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Attempt to load global parameters from configuration file
 try:
-    params = OmegaConf.load("./conf/base/parameters.yml")
+    params = OmegaConf.load("./conf/base/globals.yml")
 except Exception as e:
     logger.error(f"Failed to load globals.yml: {e}")
     params = {}
