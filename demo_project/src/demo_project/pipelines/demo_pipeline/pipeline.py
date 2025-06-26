@@ -26,7 +26,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             generate_node(
                 func=load_and_sleep,
                 inputs="mutiple_feature_parquet_s3:2d",
-                outputs="primary_icebreg:2d",
+                outputs="primary_icebreg_demo:2d",
                 name="feature_in_s3_to_primary_in_iceberg",
                 tags=["iceberg"]
             ),

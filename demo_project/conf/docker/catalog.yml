@@ -43,7 +43,7 @@ mutiple_feature_parquet_s3:
     partitionBy: ["processed_date"]
 
 # Example iceberg
-primary_icebreg:
+primary_icebreg_demo:
   <<: *IcebergPattern
   load_args:
     catalog: ${globals:Icberg_catalog}
@@ -54,7 +54,7 @@ primary_icebreg:
     mode: overwrite
     partitionBy: ["processed_date"]
 
-feature_icebreg:
+feature_icebreg_demo:
   <<: *IcebergPattern
   load_args:
     catalog: ${globals:Icberg_catalog}
