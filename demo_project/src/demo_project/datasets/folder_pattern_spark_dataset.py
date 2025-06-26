@@ -12,7 +12,7 @@ from ..helper_functions import get_date_range_for_folder_pattern
 logger = logging.getLogger(__name__)
 
 try:
-    params = OmegaConf.load("./conf/base/globals.yml")
+    params = OmegaConf.load("./conf/base/parameters.yml")
 except Exception as e:
     logger.error(f"Failed to load globals.yml: {e}")
     params = {}
