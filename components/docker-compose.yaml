@@ -82,7 +82,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     # - /mnt/data/DE/kedro-starters/my-first-project:/opt/airflow/my-first-project
-    # - ./spark_ivy/.ivy2:/home/airflow/.ivy2
+    - ./image-airflow/jars:/root/.ivy2/jars
 
   # user: "${AIRFLOW_UID:-50000}:0"
   user: root 
