@@ -6,40 +6,40 @@ FROM apache/airflow:2.10.4-python3.11
 USER root
 
 # Using Java 8
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     net-tools \
-#     krb5-user \
-#     libkrb5-dev \
-#     gcc \
-#     # add
-#     graphviz \
-#     graphviz-dev \ 
-#     # Cài đặt java 8
-#     && mkdir -p /etc/apt/keyrings \
-#     && curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor -o /etc/apt/keyrings/adoptium.gpg \
-#     && echo "deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb bookworm main" > /etc/apt/sources.list.d/adoptium.list \
-#     && apt-get update \
-#     && apt-get install -y temurin-8-jre \
-#     && apt-get autoremove -yqq --purge \
-#     && apt-get clean \
-#     && rm -rf /var/lib/apt/lists/*
-
-# Using java 11
 RUN apt-get update && apt-get install -y --no-install-recommends \
     net-tools \
     krb5-user \
     libkrb5-dev \
     gcc \
+    # add
     graphviz \
-    graphviz-dev \
+    graphviz-dev \ 
+    # Cài đặt java 8
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor -o /etc/apt/keyrings/adoptium.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb bookworm main" > /etc/apt/sources.list.d/adoptium.list \
     && apt-get update \
-    && apt-get install -y temurin-11-jre \
+    && apt-get install -y temurin-8-jre \
     && apt-get autoremove -yqq --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Using java 11
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     net-tools \
+#     krb5-user \
+#     libkrb5-dev \
+#     gcc \
+#     graphviz \
+#     graphviz-dev \
+#     && mkdir -p /etc/apt/keyrings \
+#     && curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor -o /etc/apt/keyrings/adoptium.gpg \
+#     && echo "deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb bookworm main" > /etc/apt/sources.list.d/adoptium.list \
+#     && apt-get update \
+#     && apt-get install -y temurin-11-jre \
+#     && apt-get autoremove -yqq --purge \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
 # RUN groupadd hadoop && \
 #     useradd -m -s /bin/bash -g hadoop ams && \
