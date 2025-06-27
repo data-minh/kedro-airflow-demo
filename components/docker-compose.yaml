@@ -112,6 +112,24 @@ services:
       start_period: 5s
     restart: always
 
+  postgres_log:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: kedro
+      POSTGRES_PASSWORD: kedro
+      POSTGRES_DB: kedro
+    ports:
+      - "5433:5432"
+    volumes:
+      # - postgres-db-volume:/var/lib/postgresql/data
+      - ./data/postgres_kedro:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
   redis:
     # Redis is limited to 7.2-bookworm due to licencing change
     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
