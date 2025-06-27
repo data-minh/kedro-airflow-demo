@@ -1,15 +1,18 @@
 import logging
+from omegaconf import OmegaConf
 from typing import Any, Dict, Tuple, List
+from datetime import datetime
 
 from pluggy import PluginManager
-
 from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.runner import SequentialRunner
 from kedro.runner.runner import run_node
+
 from ..helper_functions import check_data_completeness_auto
-from omegaconf import OmegaConf
+from ..data_model import Node as Node_model, Pipeline as Pipeline_model, Status
+from ..database import db_connector
 
 
 logger = logging.getLogger(__name__)
@@ -262,6 +265,7 @@ def _process_skip_node_when_output_already_has_data(node: Node, catalog: DataCat
     return all_outputs_complete
 
 
+
 class NodeSkippingRunner(SequentialRunner):
     """
     A custom Kedro runner that executes nodes sequentially and skips a node if
@@ -281,32 +285,65 @@ class NodeSkippingRunner(SequentialRunner):
     ) -> None:
         """Run the pipeline with logic to skip nodes that already have complete outputs."""
         
-        nodes = pipeline.nodes  
+        nodes = pipeline.nodes        
         
+        now = datetime.now()
+        timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
+        pipeline_obj = Pipeline_model(
+                            run_date=now.strftime("%Y-%m-%d"),
+                            start_time=timestamp_str,
+                            finish_time=None,
+                            nodes=[node.name for node in pipeline.nodes]
+                            )
+        pipeline_obj_full = db_connector.insert_or_update_pipeline(pipeline=pipeline_obj)
+
         for i, node in enumerate(nodes):
-            logger.info(f"▶️   Starting node: '{node.name}'")
-            if _process_skip_node_when_output_already_has_data(node, catalog):
-                logger.info(
-                    f"⏭️   Skipping execution for node: '{node.name}'. "
-                )
-                logger.info(f"Completed node {i + 1}/{len(nodes)}: '{node.name}'\n")
-                continue
+            logger.info(f"▶️ Starting node: {node.name}")
+            now = datetime.now()
+            timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
+            node_obj = Node_model(ID=pipeline_obj_full.ID,
+                                run_date=now.strftime("%Y-%m-%d"),
+                                start_time=timestamp_str,
+                                finish_time=None,
+                                func=node.func.__name__,
+                                inputs=node.inputs,
+                                outputs=node.outputs,
+                                name=node.name,
+                                tags=node.tags,
+                                confirms=node.confirms,
+                                namespace=node.namespace
+                                )
             
             input_list, flag = _process_skip_node_checks_if_inputs_has_enough_data(node, catalog)
             if flag:
-                logger.warning(
-                    f"⚠️ Skipping execution for node: '{node.name}' because lack of data at {input_list}\n"
-                )
-                continue
-            
-            try:
-                run_node(node, catalog, hook_manager, self._is_async, session_id)
-                logger.info(f"Completed node {i + 1}/{len(nodes)}: '{node.name}'\n")
-            except Exception:
-                logger.error(f"Node '{node.name}' has failed.", exc_info=True)
-                raise
-        
+                detail = f"Skipping execution for node: {node.name} because lack of data at {input_list}"
+                node_obj.status = Status.SKIP
+                node_obj.detail = detail
+                logger.warning(f"⚠️ {detail}\n")
+            elif _process_skip_node_when_output_already_has_data(node, catalog):
+                detail = f"Skipping execution for node: {node.name} becase outputs {node.outputs} are existed"
+                node_obj.status = Status.SKIP
+                node_obj.detail = detail
+                logger.info(f"⏭️ {detail}\n")
+            else: 
+                try:
+                    run_node(node, catalog, hook_manager, self._is_async, session_id)
+                    node_obj.status = Status.SUCCESS
+                    node_obj.finish_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                except Exception as err:
+                    node_obj.status = Status.ERROR
+                    node_obj.finish_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    node_obj.detail = f" Node {node.name} has failed. {err}"
+                    db_connector.insert_or_update_node(node=node_obj)
+                    logger.error(f"Node {node.name} has failed.", exc_info=True)
+                    raise
+            db_connector.insert_or_update_node(node=node_obj)
+            logger.info(f"Completed node {i + 1}/{len(nodes)}: {node.name}\n")
+
+        db_connector.insert_or_update_pipeline(pipeline=pipeline_obj_full)
         logger.info("Pipeline execution complete.")
+
+
 
     def run(
         self,
