@@ -64,3 +64,15 @@ feature_icebreg_demo:
   save_args:
     mode: overwrite
     partitionBy: ["processed_date"]
+
+# Mapping table
+mapping_primary:
+  <<: *IcebergPattern
+  load_args:
+    catalog: ${globals:Icberg_catalog}
+    namespace: kedro_dev_iceberg
+    table_name: mapping_primary
+    partition_column: created_at
+  save_args:
+    mode: overwrite
+    partitionBy: ["created_at"]

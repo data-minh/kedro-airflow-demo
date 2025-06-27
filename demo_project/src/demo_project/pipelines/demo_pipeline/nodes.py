@@ -20,7 +20,7 @@ def transform_before_load_to_primary(input_df_1: DataFrame, input_df_2: DataFram
 
     joined_df = input_df_1.join(
         input_df_2,
-        input_df_1["processed_date"] == input_df_2["primary_date"],
+        input_df_1["processed_date"] == input_df_2["created_at"],
         how="inner"
     ).select(
         input_df_1["id"],
