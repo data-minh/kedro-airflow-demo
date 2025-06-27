@@ -50,7 +50,7 @@ x-airflow-common:
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4}
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4_pyspark_3.5.1}
+  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4_pyspark_3.5.1_demo}
   # build: .
   environment:
     &airflow-common-env
@@ -82,7 +82,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     # - /mnt/data/DE/kedro-starters/my-first-project:/opt/airflow/my-first-project
-    - ./image-airflow/jars:/root/.ivy2/jars
+    - ./image-airflow/.ivy2:/root/.ivy2
 
   # user: "${AIRFLOW_UID:-50000}:0"
   user: root 

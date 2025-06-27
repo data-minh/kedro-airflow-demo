@@ -762,3 +762,4 @@ kedro-telemetry==0.6.0
 kedro-viz
 pyspark==3.5.1
 minio==7.2.15
+pydantic-settings>=2.0.1
