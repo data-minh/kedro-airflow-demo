@@ -32,7 +32,7 @@ def send_email_with_node_info(**context):
 
     pg_conn = psycopg2.connect(
         host="postgres",
-        port=5433,
+        port=5432,
         user="airflow",
         password="airflow",
         dbname="kedro_logs",
