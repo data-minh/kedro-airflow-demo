@@ -329,7 +329,6 @@ class NodeSkippingRunner(SequentialRunner):
                 try:
                     run_node(node, catalog, hook_manager, self._is_async, session_id)
                     node_obj.status = Status.SUCCESS
-                    node_obj.finish_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 except Exception as err:
                     node_obj.status = Status.ERROR
                     node_obj.finish_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -337,6 +336,7 @@ class NodeSkippingRunner(SequentialRunner):
                     db_connector.insert_or_update_node(node=node_obj)
                     logger.error(f"Node {node.name} has failed.", exc_info=True)
                     raise
+            node_obj.finish_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             db_connector.insert_or_update_node(node=node_obj)
             logger.info(f"Completed node {i + 1}/{len(nodes)}: {node.name}\n")
 
