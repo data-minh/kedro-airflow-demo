@@ -123,6 +123,7 @@ services:
     volumes:
       # - postgres-db-volume:/var/lib/postgresql/data
       - ./data/postgres_kedro:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
