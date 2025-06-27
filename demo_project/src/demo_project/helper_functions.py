@@ -10,12 +10,7 @@ import pyarrow as pa
 import pyarrow.fs as pafs
 from dotenv import load_dotenv
 
-try:
-    from minio import Minio
-    from minio.error import S3Error
-except:
-    pass
-
+from .storage import minio_client
 
 logger = logging.getLogger(__name__)
 
@@ -242,24 +237,11 @@ def get_partitioned_dates_s3(bucket: str, prefix: str, partition_column: str) ->
     Returns:
         List[str]: List of date strings found in the partitions.
     """
-    load_dotenv()
-
-    access_key = os.getenv("AWS_ACCESS_KEY_ID")
-    secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
-    endpoint = os.getenv("AWS_S3_ENDPOINT").replace("http://", "").replace("https://", "")
-    secure = os.getenv("AWS_S3_ENDPOINT").startswith("https://")
-
-    client = Minio(
-        endpoint=endpoint,
-        access_key=access_key,
-        secret_key=secret_key,
-        secure=secure
-    )
-
+    
     date_strings = set()
 
     try:
-        objects = client.list_objects(bucket, prefix=prefix, recursive=False)
+        objects = minio_client.list_objects(bucket, prefix=prefix, recursive=False)
         for obj in objects:
             if obj.is_dir:
                 entry_name: str = os.path.basename(os.path.normpath(obj.object_name))

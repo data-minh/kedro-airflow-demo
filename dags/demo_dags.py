@@ -3,33 +3,95 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.models import Variable
+from airflow.hooks.base import BaseHook
 
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
+import psycopg2
 
-processing_date = Variable.get("PROCESSING_DATE")
 
-def send_email_smtp():
-    # Get Airflow Variable
+def send_email_with_node_info(**context):
+    # Lấy thông tin từ Airflow Variables
     to_email = Variable.get("email_to")
     smtp_user = Variable.get("smtp_user")
     smtp_password = Variable.get("smtp_password")
 
-    print("to_email: ", to_email)
-    print("smtp_user: ", smtp_user)
+    # Lấy run_id hiện tại
+    run_id = context['dag_run'].run_id
 
-    # Tạo nội dung email
-    msg = MIMEText("Kedro pipeline đã hoàn thành thành công.")
-    msg["Subject"] = "✅ Kedro DAG Success"
+    # Lấy thông tin kết nối PostgreSQL từ Airflow Connection (nên dùng)
+    # conn = BaseHook.get_connection("my_postgres")  # Connection ID bạn đặt trong Airflow UI
+    # pg_conn = psycopg2.connect(
+    #     dbname=conn.schema,
+    #     user=conn.login,
+    #     password=conn.password,
+    #     host=conn.host,
+    #     port=conn.port,
+    # )
+
+    pg_conn = psycopg2.connect(
+        host="192.168.1.225",
+        port=5433,
+        user="kedro",
+        password="kedro",
+        dbname="kedro",
+    )
+
+    # Truy vấn dữ liệu node theo run_id
+    cursor = pg_conn.cursor()
+    cursor.execute("""
+        SELECT name, status, start_time, finish_time, detail
+        FROM nodes
+        WHERE run_id = %s
+        ORDER BY start_time
+    """, (run_id,))
+    rows = cursor.fetchall()
+
+    # Tạo bảng HTML chứa thông tin node
+    html_rows = "\n".join([
+        f"""
+        <tr>
+            <td>{name}</td>
+            <td>{status}</td>
+            <td>{start}</td>
+            <td>{finish or ''}</td>
+            <td>{detail or ''}</td>
+        </tr>
+        """
+        for name, status, start, finish, detail in rows
+    ])
+    html_table = f"""
+        <html><body>
+        <p><b>Kết quả thực thi DAG:</b> <code>{run_id}</code></p>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <tr>
+                <th>Node</th>
+                <th>Status</th>
+                <th>Start Time</th>
+                <th>Finish Time</th>
+                <th>Detail</th>
+            </tr>
+            {html_rows}
+        </table>
+        </body></html>
+    """
+
+    # Tạo email
+    msg = MIMEText(html_table, "html")
+    msg["Subject"] = f"✅ Kedro DAG Completed: {run_id}"
     msg["From"] = smtp_user
     msg["To"] = to_email
 
-    # Gửi email qua Gmail SMTP
+    # Gửi email
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.starttls()
         server.login(smtp_user, smtp_password)
         server.send_message(msg)
+
+    cursor.close()
+    pg_conn.close()
+
 
 
 with DAG(
@@ -53,13 +115,13 @@ with DAG(
         """,
     )
 
-    # send_email_task = PythonOperator(
-    #     task_id="send_email_notification",
-    #     python_callable=send_email_smtp,
-    # )
+    send_email_task = PythonOperator(
+        task_id="send_email_notification",
+        python_callable=send_email_with_node_info,
+    )
 
     end_task = EmptyOperator(
         task_id="end_task"
     )
 
-    start_task >> kedro_run >> end_task
+    start_task >> kedro_run >> send_email_task >> end_task
